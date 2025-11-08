@@ -7,7 +7,7 @@ CLEAN_IMAGE=false
 LIST_IMAGE=false
 REM_WHEN_DONE=true
 
-BUILD_CMD="docker build -t ${IMAGE_NAME} ."
+BUILD_CMD="docker build -t ${IMAGE_NAME} -f ./Dockerfile ."
 
 # Parse flags
 while [[ $# -gt 0 ]]; do
