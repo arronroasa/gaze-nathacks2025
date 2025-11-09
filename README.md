@@ -1,4 +1,5 @@
 # Gaze - NatHacks 2025
+![gaze-logo-text.png](gaze-logo-text.png)
 A way to use your computer hands-free through EOG processing and Computer Vision
 ## Requirements
 Install and set up the latest version of [Docker](https://docs.docker.com/get-started/get-docker/).
