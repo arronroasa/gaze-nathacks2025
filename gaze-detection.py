@@ -183,7 +183,8 @@ def main():
             cv2.putText(frame, label_dist, (10, 30),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
             
-            return gaze_point
+            gaze_coords = (gaze_x/img_w, gaze_y/img_h)
+            print(gaze_coords)
 
         cv2.imshow("L2CS-Net Gaze Tracking", frame)
         if cv2.waitKey(1) & 0xFF == ord("q"):
