@@ -1,6 +1,7 @@
 import pyautogui
 import time
 
+
 class CursorMover():
     def __init__(self, move_distance):
         self.__move_distance = move_distance
@@ -9,25 +10,11 @@ class CursorMover():
         pyautogui.FAILSAFE = True
         print("Mouse controller script started. Move mouse to top-left corner to stop.")
 
-    def move_mouse(self, x_signal, y_signal):
+    def move_mouse(self, x_signal, y_signal, ):
         try:
             x_move = 0
             y_move = 0
 
-            # --- Get Input Signals ---
-            # The prompt asks for 1=Left/Up and 0=Right/Down.
-            # It's better to use raw input and handle potential conversion errors.
-            # try:
-            #     x_signal_input = input("Enter X-Axis signal (1=Left, 0=Right, or any other number to skip): ")
-            #     y_signal_input = input("Enter Y-Axis signal (1=Up,   0=Down, or any other number to skip): ")
-                
-            #     # Convert to integer, or use a value like -1 to signify 'skip/no move' if conversion fails
-            #     x_signal = int(x_signal_input)
-            #     y_signal = int(y_signal_input)
-            # except ValueError:
-            #     # Handle cases where the user enters non-integer text
-            #     print("Invalid input. Please enter only 1 or 0 (or another number to skip). Skipping move.")
-            #     return # Restart the loop for a new valid input
 
             # --- X-Axis Logic ---
             # Signal 1 (Left) maps to negative x_move
@@ -59,7 +46,8 @@ class CursorMover():
             else:
                 # This will print if the user entered signals other than 1 or 0
                 print("No move signal (1 or 0) detected. Mouse not moved.")
-                
+
+            
             print("-" * 20) # Separator for clarity
             return False
             
@@ -69,3 +57,7 @@ class CursorMover():
             print(f'\nAn unexpected error occured: {e}')
         finally:
             return False
+        
+    def Click(self):
+        pyautogui.clicK()
+    
