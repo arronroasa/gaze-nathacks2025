@@ -59,5 +59,5 @@ class CursorMover():
             return False
         
     def Click(self):
-        pyautogui.clicK()
+        pyautogui.leftClick()
     

@@ -45,6 +45,9 @@ class EyeDetector():
         # center_max_y = cv2.getTrackbarPos("Center Max Y (%)", "Controls") / 100.0
 
         faces = self.__face_cascade.detectMultiScale(gray, 1.3, 5)
+
+        x_dir = 0
+        y_dir = 0
         
         for (x, y, w, h) in faces:
             roi_gray = gray[y:y+h, x:x+w]
@@ -108,9 +111,6 @@ class EyeDetector():
                     else:
                         vert = 'CENTER'
 
-                    x_dir = 0
-                    y_dir = 0
-
                     # Combine directions
                     if horiz == 'CENTER' and vert == 'CENTER':
                         direction = 'CENTER'
@@ -147,7 +147,7 @@ class EyeDetector():
                     # else:
                     #     circle_color = (0, 0, 255)  # red
 
-                    return [x_dir, y_dir]
+        return [x_dir, y_dir]
 
         #             cv2.circle(eye_color, (int(smooth_cx), int(smooth_cy)), int(radius), circle_color, 2)
         #             cv2.putText(frame, direction, (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
@@ -158,7 +158,7 @@ class EyeDetector():
                     # if cv2.waitKey(1) & 0xFF == ord('q'):
                     #     break
         
-        def __del__(self):
-            self.__cap.release()
-            # cv2.destroyAllWindows()
-            # cv2.destroyWindow("Controls")
+    def __del__(self):
+        self.__cap.release()
+        # cv2.destroyAllWindows()
+        # cv2.destroyWindow("Controls")
