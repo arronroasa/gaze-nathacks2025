@@ -6,7 +6,7 @@ class Serial_Listener():
         self.__baud_rate = baud_rate
         self.__thres = thres
         self.__ser = ser
-        time.sleep(2)
+        # time.sleep(2)
         
     def is_float(self, s):
         try:
