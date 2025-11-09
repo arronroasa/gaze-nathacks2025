@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-IMAGE_NAME="lem_poop"
+IMAGE_NAME="gaze_detection"
 
 CLEAN_IMAGE=false
 LIST_IMAGE=false
