@@ -16,8 +16,8 @@ class Serial_Listener():
             return False
         
     def get_click(self):
-        avg = 0
         for _ in range(10):
+            avg = 0
             if self.__ser.in_waiting:
                 line = self.__ser.readline().decode('utf-8').strip()
                 if (self.is_float(line)):
