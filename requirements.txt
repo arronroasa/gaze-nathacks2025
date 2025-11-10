@@ -25,3 +25,4 @@ pytweening==1.2.0
 pytz==2025.2
 six==1.17.0
 tzdata==2025.2
+git+https://github.com/edavalosanaya/L2CS-Net.git@main
