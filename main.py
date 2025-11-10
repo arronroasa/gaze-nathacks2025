@@ -1,5 +1,5 @@
 import serial, time
-import Bleh, CursorMovement
+import Bleh, CursorMovement, GazeDetection
 
 testing = False
 
@@ -8,7 +8,7 @@ time.sleep(2)
 
 serial_listener = Bleh.Serial_Listener(115200, 67/100, ser)
 cursor_mover = CursorMovement.CursorMover(67)
-# eye_detector = GazeDetection.EyeDetector()
+eye_detector = GazeDetection.EyeDetector()
 
 def test():
     print("Beginning Testing Function...    ")
