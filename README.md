@@ -1,6 +1,6 @@
 # Gaze - NatHacks 2025
 ![gaze-logo-text.png](gaze-logo.png)
-A way to use your computer hands-free through EOG processing and Computer Vision
+A way to use your computer hands-free through EMG processing and Computer Vision.
 ## Requirements
 Install and set up the latest version of [Docker](https://docs.docker.com/get-started/get-docker/).
 
@@ -40,15 +40,16 @@ pytz==2025.2
 six==1.17.0
 tzdata==2025.2
 ```
+Additionally, download L2CS-Net at [https://github.com/edavalosanaya/L2CS-Net](https://github.com/edavalosanaya/L2CS-Net).
 ## Using Docker
 Once you have cloned the project onto your local machine, open a terminal in the repository folder and run:
 
 ```bash
 bash ./run.sh
 ```
-> If you are having issues with executing on Linux, try running `chmod +700 setup.sh`.
+> If you are having issues with executing on Linux, try running `chmod +700 run.sh`.
 
-This should automatically install the dependencies and run the .py file.
+This should automatically install the dependencies.
 ## Using the Virtual Environment
 If you have decided to use a Python virtual environment, open a `bash` terminal in the project folder and run the following command:
 ```bash
@@ -60,5 +61,12 @@ After running `setup.sh`, you can enter the virtual environment by entering `sou
 > On Windows, it may be `source ./venv/Scripts/activate`.
 >
 > Additionally on some Linux distributions, you may have to configure `Xauth` in order for pyautogui to work.
+
+## Running
+Once you have set up the program properly (Docker or virtual environment), run the `main.py` file to start the program.
 ## Features
-WIP
+Eye Tracking Mouse Movement:
+- Uses open source models (OpenCV, L2CS) to determine position of eye movement, which moves the cursor to where the user is looking (PyAutoGUI).
+
+Electromyography (EMG) Action Processing:
+- Reads EMG signals (BioAmp EXG pill) processed through the Arduino to send actions to the computer when the user contracts muscles. Currently, it is set to click the mouse.
