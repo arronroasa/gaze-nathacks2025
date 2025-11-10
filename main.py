@@ -6,7 +6,7 @@ testing = False
 ser = serial.Serial('COM3', 115200, timeout=1)
 time.sleep(2)
 
-serial_listener = Bleh.Serial_Listener(19200, 69/67, ser)
+serial_listener = Bleh.Serial_Listener(115200, 67/100, ser)
 cursor_mover = CursorMovement.CursorMover(67)
 # eye_detector = GazeDetection.EyeDetector()
 
@@ -47,11 +47,15 @@ def test():
 def main():
     print("Beginning Main Program...")
     while(True):
-        # dir = eye_detector.get_eye_detection()
-        # cursor_mover.move_mouse(dir[0], dir[1])
+        dir = eye_detector.get_eye_detection()
+        if (dir):
+            cursor_mover.move_mouse(dir[0], dir[1])
+        
         if (serial_listener.get_click()):
             print("CLICKED")
             cursor_mover.Click()
+
+        
 
 if (__name__ == "__main__"):
     if (testing):
