@@ -48,21 +48,6 @@ class WebcamStream:
 # ----------------------------
 # FUNCTIONS (Unchanged)
 # ----------------------------
-def detect_face(frame, scale_factor=0.5):
-    small_frame = cv2.resize(frame, (0, 0), fx=scale_factor, fy=scale_factor)
-    gray = cv2.cvtColor(small_frame, cv2.COLOR_BGR2GRAY)
-    faces = face_cascade.detectMultiScale(gray, 1.3, 5)
-    if len(faces) == 0:
-        return None
-    
-    # Use the largest face found, assuming it's the main user
-    # Note: Using faces[0] is still a simplification, but maintained from original.
-    x, y, w, h = [int(f / scale_factor) for f in faces[0]]
-    
-    face_crop = frame[y:y+h, x:x+w]
-    face_crop = cv2.resize(face_crop, (224, 224)) # resize for L2CS-Net
-    return face_crop, (x, y, w, h)
-
 
 def draw_gaze(frame, bbox, yaw, pitch):
     x, y, w, h = bbox
@@ -90,29 +75,44 @@ def draw_gaze(frame, bbox, yaw, pitch):
     return frame
 
 
-# ----------------------------
-# MAIN LOOP
-# ----------------------------
-def main():
-    vs = WebcamStream(0)
+class EyeDetector():
+    def __init__(self):
+        self.__vs = WebcamStream(0)
 
-    frame_count = 0
-    skip_frames = 2
-    last_yaw, last_pitch, last_bbox = 0, 0, None
+        self.__frame_count = 0
+        self.__skip_frames = 2
+        self.__last_yaw, self.__last_pitch, self.__last_bbox = 0, 0, None
 
-    alpha = 0.3 # smoothing factor
-    neutral_yaw, neutral_pitch = None, None # neutral gaze calibration
+        self.__alpha = 0.3 # smoothing factor
+        self.__neutral_yaw, self.__neutral_pitch = None, None # neutral gaze calibration
+    
+    def detect_face(frame, scale_factor=0.5):
+        small_frame = cv2.resize(frame, (0, 0), fx=scale_factor, fy=scale_factor)
+        gray = cv2.cvtColor(small_frame, cv2.COLOR_BGR2GRAY)
+        faces = face_cascade.detectMultiScale(gray, 1.3, 5)
+        if len(faces) == 0:
+            return None
+        
+        # Use the largest face found, assuming it's the main user
+        # Note: Using faces[0] is still a simplification, but maintained from original.
+        x, y, w, h = [int(f / scale_factor) for f in faces[0]]
+        
+        face_crop = frame[y:y+h, x:x+w]
+        face_crop = cv2.resize(face_crop, (224, 224)) # resize for L2CS-Net
+        return face_crop, (x, y, w, h)
 
-    while True:
-        ret, frame = vs.read()
+
+    
+    def get_eye_detection(self):
+        ret, frame = self.__vs.read()
         if not ret:
-            break
+            return False
 
         frame = cv2.flip(frame, 1) # mirror for natural webcam view
-        frame_count += 1
+        self.__frame_count += 1
 
-        if frame_count % skip_frames == 0:
-            face_crop_info = detect_face(frame)
+        if self.__frame_count % self.__skip_frames == 0:
+            face_crop_info = self.__detect_face(frame)
             if face_crop_info is not None:
                 face_crop, bbox = face_crop_info
                 gaze_result = gaze_pipeline.step(face_crop)
@@ -123,24 +123,24 @@ def main():
                 yaw = -yaw
 
                 # Capture neutral gaze on first valid detection
-                if neutral_yaw is None:
-                    neutral_yaw = yaw
-                    neutral_pitch = pitch
+                if self.__neutral_yaw is None:
+                    self.__neutral_yaw = yaw
+                    self.__neutral_pitch = pitch
 
                 # Offset by neutral gaze
-                yaw -= neutral_yaw
-                pitch -= neutral_pitch
+                yaw -= self.__neutral_yaw
+                pitch -= self.__neutral_pitch
 
                 # Exponential smoothing
-                last_yaw = alpha * yaw + (1 - alpha) * last_yaw
-                last_pitch = alpha * pitch + (1 - alpha) * last_pitch
-                last_bbox = bbox
+                self.__last_yaw = self.__alpha * yaw + (1 - self.__alpha) * self.__last_yaw
+                self.__last_pitch = self.__alpha * pitch + (1 - self.__alpha) * self.__last_pitch
+                self.__last_bbox = bbox
 
-        if last_bbox is not None:
-            frame = draw_gaze(frame, last_bbox, last_yaw, last_pitch)
+        if self.__last_bbox is not None:
+            frame = draw_gaze(frame, self.__last_bbox, self.__last_yaw, self.__last_pitch)
 
             # --- DYNAMIC DISTANCE ESTIMATION ---
-            face_height_pixels = last_bbox[3]
+            face_height_pixels = self.__last_bbox[3]
             
             # D_actual = (S_actual * F) / S_pixel
             # Calculate dynamic distance for optional display (in mm)
@@ -156,8 +156,8 @@ def main():
             # 1. Calculate pixel offsets (Swap and Negate Horizontal)
             # Horizontal offset (X-axis) now comes from Pitch (last_pitch), and is negated for flip.
             # Vertical offset (Y-axis) now comes from Yaw (last_yaw).
-            dx_pixels_corrected = -FOCAL_LENGTH_PIXELS * np.tan(last_pitch)
-            dy_pixels_corrected = FOCAL_LENGTH_PIXELS * np.tan(last_yaw)
+            dx_pixels_corrected = -FOCAL_LENGTH_PIXELS * np.tan(self.__last_pitch)
+            dy_pixels_corrected = FOCAL_LENGTH_PIXELS * np.tan(self.__last_yaw)
 
             # 2. Calculate target screen coordinates based on frame center
             center_x = img_w / 2
@@ -183,15 +183,10 @@ def main():
             cv2.putText(frame, label_dist, (10, 30),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
             
-            gaze_coords = (gaze_x/img_w, gaze_y/img_h)
-            print(gaze_coords)
+            gaze_coords = [gaze_x/img_w, gaze_y/img_h]
+            return gaze_coords
+        return False
 
-        cv2.imshow("L2CS-Net Gaze Tracking", frame)
-        if cv2.waitKey(1) & 0xFF == ord("q"):
-            break
-
-    vs.stop()
-    cv2.destroyAllWindows()
-
-if __name__ == '__main__':
-    main()
+    def __del__(self):
+        self.__vs.stop()
+        cv2.destroyAllWindows()

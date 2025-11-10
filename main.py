@@ -1,14 +1,14 @@
 import serial, time
-import Bleh, CursorMovement, EyeDetection
+import Bleh, CursorMovement, GazeDetection
 
-testing = False
+testing = True
 
 ser = serial.Serial('COM3', 19200, timeout=1)
 time.sleep(2)
 
 serial_listener = Bleh.Serial_Listener(19200, 69/67, ser)
 cursor_mover = CursorMovement.CursorMover(67)
-eye_detector = EyeDetection.EyeDetector(0.69, 0.67, 0.69, 0.67)
+eye_detector = GazeDetection.EyeDetector()
 
 def test():
     print("Beginning Testing Function...    ")
@@ -48,7 +48,7 @@ def main():
     print("Beginning Main Program...")
     while(True):
         dir = eye_detector.get_eye_detection()
-        cursor_mover.move_mouse(0, 0)
+        cursor_mover.move_mouse(dir[0], dir[1])
         if (serial_listener.get_click()):
             print("CLICKED")
             cursor_mover.Click()
