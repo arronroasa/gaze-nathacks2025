@@ -15,14 +15,17 @@ This project requires some Python packages as prerequisites.
 contourpy==1.3.3
 cycler==0.12.1
 fonttools==4.60.1
+inference==0.60.0
+inference-cli==0.60.0
+inference-sdk==0.60.0
 kiwisolver==1.4.9
 matplotlib==3.10.7
 MouseInfo==0.1.3
 numpy==2.2.6
-opencv-python==4.12.0.88
-packaging==25.0
+opencv-python==4.10.0.84
+packaging==24.2
 pandas==2.3.3
-pillow==12.0.0
+pillow==11.3.0
 PyAutoGUI==0.9.54
 PyGetWindow==0.0.9
 PyMsgBox==2.0.1
@@ -36,7 +39,6 @@ pytweening==1.2.0
 pytz==2025.2
 six==1.17.0
 tzdata==2025.2
-ultralytics==8.3.226
 ```
 ## Using Docker
 Once you have cloned the project onto your local machine, open a terminal in the repository folder and run:
