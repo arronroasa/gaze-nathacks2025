@@ -16,9 +16,9 @@ class Serial_Listener():
             return False
         
     def get_click(self):
+        avg = 0
         for _ in range(10):
-            avg = 0
-            if self.__ser.in_waiting:
+                if self.__ser.in_waiting:
                 line = self.__ser.readline().decode('utf-8').strip()
                 if (self.is_float(line)):
                     avg += float(line)
@@ -26,7 +26,7 @@ class Serial_Listener():
                     print(line)
             time.sleep(1/self.__baud_rate)
 
-        if ((avg/10 > self.__thres) and (time.time()-self.__delay > 1)):
+        if ((avg/10 > self.__thres) and (time.time()-self.__delay > 0.5S)):
             print(f"BLINKED with EMG VALUE: {avg/10}")
             self.__delay = time.time()
             return True
