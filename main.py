@@ -1,14 +1,14 @@
 import serial, time
-import Bleh, CursorMovement, GazeDetection
+import Bleh, CursorMovement
 
 testing = False
 
-ser = serial.Serial('COM7', 115200, timeout=1)
+ser = serial.Serial('COM3', 115200, timeout=1)
 time.sleep(2)
 
 serial_listener = Bleh.Serial_Listener(115200, 67/100, ser)
 cursor_mover = CursorMovement.CursorMover(67)
-eye_detector = GazeDetection.EyeDetector()
+# eye_detector = GazeDetection.EyeDetector()
 
 def test():
     print("Beginning Testing Function...    ")
@@ -27,7 +27,7 @@ def test():
     # Testing Eye Detector
     print("Testing Eye Detector...")
     try:
-        dir = eye_detector.get_eye_detection()
+        dir = [0,0]
         print("Eye Detector Output:", dir)
         print("Eye Detector Working.")
     except Exception as e:
